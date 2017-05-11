@@ -99,26 +99,11 @@ B = \{2, 3, 0, 0\}
 \begin{equation}
 P(A, B) = \frac{\mathcal{P}(0) \times \mathcal{P}(2) \times \mathcal{P}(0) \times \mathcal{P}(2)}{\mathcal{P}(2) \times \mathcal{P}(3) \times \mathcal{P}(0) \times \mathcal{P}(0)} = \frac{2 \times 3 \times 2 \times 3}{3 \times 7 \times \times 2 \times 2} = \frac{2^{2} \times 3^{2}}{2^{2} \times 3 \times 7} = \frac{3}{7}
 \end{equation}
-\pagebreak
-\section*{Implementation}
-\subsection*{Python}
-Complexity\footnote{$K$ represents the bit width of a floating point number in python which is implementation specific. For further information refer to the architecture of your system and the IEEE 754 standard}: $\mathcal{O}(K*(2^{K})*N) \;  \alpha \; \mathcal{O}(N);\quad K=[16, 24]$
-\begin{lstlisting}
-def isPermutation(A, B):
-	primes = [2.0, 3.0, 5.0, 7.0, 11.0, 13.0, 17.0, 19.0, 23.0, 29.0]
-	if not (len(A) - len(B)):
-		product = 1.0
-		N = len(A)
-		for j in range(N):
-			product *= primes[int(A[j])]
-			product /= primes[int(B[j])]
-		return product
-	else:
-		# trivial case
-		return 0.0
-\end{lstlisting}
+
+
+\subsection*{Input Scaling}
 With this implementation it is possible to detect permutations from an arbitrary amount of sets through daisy chaining
-\begin{lstlisting}[frame=single]
+\begin{lstlisting}
 # P(A, B, C)
 isPermutation(A,B)*isPermutation(B,C)
 
@@ -126,6 +111,48 @@ isPermutation(A,B)*isPermutation(B,C)
 isPermutation(A, B)*...*isPermutation(Y, Z)
 \end{lstlisting}
 
+\pagebreak
+\section*{Implementation}
+\subsection*{Python}
+Complexity\footnote{$K$ represents the bit width of a floating point number in python which is implementation specific. For further information refer to the architecture of your system and the IEEE 754 standard}: $\mathcal{O}(K*(2^{K})*N) \;  \alpha \; \mathcal{O}(N);\quad K=[16, 24]$
+\begin{lstlisting}
+def isPermutation(A, B):
+	primes = [2.0, 3.0, 5.0, 7.0, 11.0, 13.0, 17.0, 19.0, 23.0, 29.0]
+	if (len(A) - len(B)):
+		# trivial case
+		return 0.0;
+	else:
+		product = 1.0
+		N = len(A)
+		for j in range(N):
+			product *= primes[int(A[j])]
+			product /= primes[int(B[j])]
+		return product
+\end{lstlisting}
+
+\subsection*{Javascript}
+Complexity\footnote{$L$ represents the decimal length of either a 32-bit or 64-bit floating point number. However this calculation is a very fuzzy estimate since each browser pretty much has their own implementation of javascript. Also the descriptions provided by the Mozilla Developer Network heavily generalize.}: $\mathcal{O}(N*L) \; \alpha \; \mathcal{O}(N);\quad L=[10, 20]$
+\begin{lstlisting}
+function isPermutation(A, B){
+	var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
+	var a = A.split("").map(function(t){return parseInt(t);});
+	var b = B.split("").map(function(t){return parseInt(t);});
+	if(a.length != b.length){
+		// Trivial Case
+		return 0.0;
+	}
+	var product = 1;
+	var N = a.length;
+	for (j=0; i < N; j++){
+		product *= primes[a[j]];
+		product /= primes[b[j]];
+	}
+
+		return product;
+
+}
+
+\end{lstlisting}
 
 
 \end{document}
